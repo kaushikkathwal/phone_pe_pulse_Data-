@@ -19,7 +19,7 @@ from streamlit_player import st_player
 
 mydb = psycopg2.connect(host = "localhost",
                         user = "postgres",
-                        password = "12345",
+                        password = "your password",
                         database = "phonepe_data",
                         port = "5432"
                         )
