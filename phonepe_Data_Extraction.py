@@ -258,7 +258,7 @@ top_user['States'] = top_user['States'].str.replace("Dadra & Nagar Haveli & Dama
 
 mydb = psycopg2.connect(host = "localhost",
                         user = "postgres",
-                        password = "12345",
+                        password = "your password",
                         database = "phonepe_data",
                         port = "5432"
                         )
