@@ -19,7 +19,7 @@ from streamlit_player import st_player
 
 mydb = psycopg2.connect(host = "localhost",
                         user = "postgres",
-                        password = "your password",
+                        password = "YourPassword",
                         database = "phonepe_data",
                         port = "5432"
                         )
@@ -344,21 +344,14 @@ def animate_amount(sel_year,sel_quarter):
 #Table includes details about the transaction amount in that particular state corresponding to a certain year and quarter .
 
 def animate_amount_table(sel_year,sel_quarter):
-    frames = []
-    for year in Map_user["Years"].unique():
-        for quarter in Aggre_trans["Quarter"].unique():
-            year=int(sel_year)
-            quarter=int(sel_quarter)
+    year= int(sel_year)
+    quarter=int(sel_quarter)
+    atay= Aggre_trans[["States","Years","Transaction_amount"]]
+    atay1= atay.loc[(Aggre_trans["Years"]==year)&(Aggre_trans["Quarter"]==quarter)]
+    atay2= atay1.groupby("States")["Transaction_amount"].sum()
+    atay3= pd.DataFrame(atay2).reset_index()
+    return st.write(atay3)
 
-            aggregate_transaction = Aggre_trans[(Aggre_trans["Years"]==year)&(Aggre_trans["Quarter"]==quarter)]
-            aggregate_frame = aggregate_transaction[["States","Transaction_amount"]]
-            aggregate_frame = aggregate_frame.sort_values(by="States")
-            aggregate_frame["Years"]=year
-            aggregate_frame["Quarter"]=quarter
-            frames.append(aggregate_frame)
-
-    merged_df = pd.concat(frames)
-    return st.write(merged_df)
 
 
 #Visualization of transaction Amount in a particular year in The form of Bar chart.
@@ -473,25 +466,15 @@ def animate_count(sel_year,sel_quarter):
 
 def animate_count_table(sel_year,sel_quarter):
 
-    frames= []
+    year= int(sel_year)
+    quarter=int(sel_quarter)
+    atay= Aggre_trans[["States","Years","Transaction_count"]]
+    atay1= atay.loc[(Aggre_trans["Years"]==year)&(Aggre_trans["Quarter"]==quarter)]
+    atay2= atay1.groupby("States")["Transaction_count"].sum()
+    atay3= pd.DataFrame(atay2).reset_index()
+    return st.write(atay3)
 
-    for year in Aggre_trans["Years"].unique():
-        for quarter in Aggre_trans["Quarter"].unique():
-            year=int(sel_year)
-            quarter=int(sel_quarter)
-            at1= Aggre_trans[(Aggre_trans["Years"]==year)&(Aggre_trans["Quarter"]==quarter)]
-            atf1= at1[["States", "Transaction_count"]]
-            atf1=atf1.sort_values(by="States")
-            atf1["Years"]=year
-            atf1["Quarter"]=quarter
-            frames.append(atf1)
-
-    merged_df = pd.concat(frames)
-    return st.write(merged_df)
-
-
-
-
+    
 #Representation of transaction count in a particular year in The form of Bar chart .
 
 def payment_count_year(sel_year):
@@ -865,9 +848,9 @@ if selected=="HOME":
         st.markdown(":white[**The Indian digital payments story has truly captured the world's imagination.From the largest towns to the remotest villages, there is a payments revolution being driven by the penetration of mobile phones, mobile internet and state-of-the-art payments infrastructure built as Public Goods championed by the central bank and the government. Founded in December 2015, PhonePe has been a strong beneficiary of the API driven digitisation of payments in India. When we started, we were constantly looking for granular and definitive data sources on digital payments in India. PhonePe Pulse is our way of giving back to the digital payments ecosystem.**]")
         
     with col2:
-        filepath=load_lottiefile("E:\data science\phonepe project\A.json")
-        st.lottie(filepath,speed=1,reverse=False,loop=True,height=550,width=550,quality="highest")
         
+        filepath=load_lottiefile("E:\data science\phonepe project\A.json")
+        st.lottie(filepath,speed=1,reverse=False,loop=True,height=550,width=500,quality="highest")
 
     selected=option_menu(
         menu_title="",
@@ -961,7 +944,7 @@ if selected=="EXPLORE DATA":
                 payment_amount_year_table(sel_year)
             with col2:
                 transaction_count_year(sel_year)
-                transaction_amount_year_table(sel_year)
+                transaction_count_year_table(sel_year)
                 payment_count_year(sel_year)
                 payment_amount_year_table(sel_year)
 
